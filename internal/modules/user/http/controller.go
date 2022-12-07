@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gianlucapastori/nausicaa-app/internal/modules/auth"
@@ -17,13 +18,21 @@ func New(services auth.Services) user.Controller {
 
 func (c *userController) OAuthGoogleLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		c.services.OAuthGoogleLogin()
+		u, err := c.services.OAuthGoogleLogin(w)
+		if err != nil {
+			w.WriteHeader(500)
+			fmt.Fprintf(w, "could not redirect to oauth google")
+			return
+		}
+
+		http.Redirect(w, r, u, http.StatusTemporaryRedirect)
 		return
 	}
 }
 
 func (c *userController) OAuthGoogleCallback() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
+		c.services.OAuthGoogleCallback()
+		return
 	}
 }

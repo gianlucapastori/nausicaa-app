@@ -7,4 +7,5 @@ import (
 
 func Init(mux *mux.Router, controller user.Controller) {
 	mux.HandleFunc("/auth/google/login", controller.OAuthGoogleLogin()).Methods("GET")
+	mux.HandleFunc("/auth/google/callback", controller.OAuthGoogleCallback()).Methods("GET")
 }
